@@ -106,15 +106,20 @@ const ProductsPage = () => {
   const debouncedSearch = useDebounce(searchInput, 500);
 
   const category = searchParams.get('category') || '';
+  const urlSearch = searchParams.get('search') || '';
 
-  const fetchEbayProducts = useCallback(async (cat, search) => {
+  // Sync URL search param into input on navigation from navbar
+  useEffect(() => {
+    if (urlSearch) setSearchInput(urlSearch);
+  }, [urlSearch]);
+
+  const fetchEbayProducts = useCallback(async (query) => {
     setLoading(true);
     setError(false);
     try {
-      const query = search || EBAY_QUERIES[cat] || EBAY_QUERIES[''];
       const res = await axios.get(`http://localhost:5000/api/ebay/products?q=${encodeURIComponent(query)}`);
       const mapped = (res.data || [])
-        .map((item) => mapEbayItem(item, cat || 'watches'))
+        .map((item) => mapEbayItem(item, category || 'watches'))
         .filter((p) => p.price > 0);
       setProducts(mapped);
     } catch (err) {
@@ -123,11 +128,13 @@ const ProductsPage = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [category]);
 
   useEffect(() => {
-    fetchEbayProducts(category, debouncedSearch);
-  }, [category, debouncedSearch, fetchEbayProducts]);
+    // Priority: typed search > URL search param > category default
+    const query = debouncedSearch || urlSearch || EBAY_QUERIES[category] || EBAY_QUERIES[''];
+    fetchEbayProducts(query);
+  }, [category, debouncedSearch, urlSearch, fetchEbayProducts]);
 
   const handleCategoryChange = (cat) => {
     setSearchParams(cat ? { category: cat } : {});
@@ -224,7 +231,7 @@ const ProductsPage = () => {
             ) : error ? (
               <div className="text-center py-24">
                 <p className="text-luxury-subtext mb-2">Could not load products from eBay.</p>
-                <button onClick={() => fetchEbayProducts(category, debouncedSearch)} className="btn-outline mt-4">
+                <button onClick={() => fetchEbayProducts(debouncedSearch || urlSearch || EBAY_QUERIES[category] || EBAY_QUERIES[''])} className="btn-outline mt-4">
                   Retry
                 </button>
               </div>

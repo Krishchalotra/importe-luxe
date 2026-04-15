@@ -23,6 +23,8 @@ const Navbar = () => {
   const wishlistCount = useSelector((state) => state.wishlist.items.length);
   const [scrolled, setScrolled] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -34,6 +36,14 @@ const Navbar = () => {
     await dispatch(logout());
     setUserMenuOpen(false);
     navigate('/');
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    setSearchOpen(false);
+    navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    setSearchQuery('');
   };
 
   return (
@@ -70,11 +80,47 @@ const Navbar = () => {
           {/* Actions */}
           <div className="flex items-center space-x-5">
             {/* Search */}
-            <Link to="/search" className="text-luxury-subtext hover:text-gold-400 transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </Link>
+            <div className="relative flex items-center">
+              <AnimatePresence>
+                {searchOpen && (
+                  <motion.form
+                    onSubmit={handleSearch}
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: 220, opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden mr-2"
+                  >
+                    <input
+                      autoFocus
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Escape' && setSearchOpen(false)}
+                      placeholder="Search products..."
+                      className="w-full bg-luxury-charcoal border border-gold-500/50 text-luxury-text text-xs px-3 py-2 focus:outline-none focus:border-gold-500 placeholder-luxury-subtext"
+                    />
+                  </motion.form>
+                )}
+              </AnimatePresence>
+              <button
+                onClick={() => {
+                  if (searchOpen && searchQuery.trim()) {
+                    setSearchOpen(false);
+                    navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                    setSearchQuery('');
+                  } else {
+                    setSearchOpen((prev) => !prev);
+                  }
+                }}
+                className="text-luxury-subtext hover:text-gold-400 transition-colors"
+                aria-label="Search"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
 
             {/* Wishlist */}
             {isAuthenticated && (
