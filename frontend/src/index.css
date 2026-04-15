@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { @apply box-border; }
+  html { @apply scroll-smooth; }
+  body {
+    @apply bg-luxury-black text-luxury-text font-sans antialiased;
+  }
+  h1, h2, h3 { @apply font-serif; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gold-500 hover:bg-gold-400 text-luxury-black font-semibold px-6 py-3 
+           transition-all duration-300 tracking-widest uppercase text-xs;
+  }
+  .btn-outline {
+    @apply border border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-luxury-black 
+           font-semibold px-6 py-3 transition-all duration-300 tracking-widest uppercase text-xs;
+  }
+  .btn-ghost {
+    @apply text-luxury-subtext hover:text-luxury-text transition-colors duration-200;
+  }
+  .card-luxury {
+    @apply bg-luxury-dark border border-luxury-border hover:border-gold-600 
+           transition-all duration-300;
+  }
+  .input-luxury {
+    @apply w-full bg-luxury-charcoal border border-luxury-border text-luxury-text 
+           placeholder-luxury-subtext px-4 py-3 focus:outline-none focus:border-gold-500 
+           transition-colors duration-200;
+  }
+  .section-title {
+    @apply font-display text-3xl md:text-4xl text-luxury-text tracking-wide;
+  }
+  .gold-divider {
+    @apply w-16 h-px bg-gold-500 mx-auto my-4;
+  }
+  .skeleton {
+    @apply bg-luxury-muted animate-pulse;
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #c9960f; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #e4b429; }
