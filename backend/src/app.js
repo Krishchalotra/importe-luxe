@@ -21,6 +21,8 @@ const paymentRoutes = require('./routes/v1/payment.routes');
 const ebayRoutes = require('./routes/v1/ebay.routes');
 const ebayProductRoutes = require('./routes/v1/ebay');
 const ebaySimpleRoutes = require('./routes/v1/ebay');
+const oauthRoutes = require('./routes/v1/oauth.routes');
+const passport = require('./config/passport');
 
 const app = express();
 
@@ -66,8 +68,8 @@ app.use(cookieParser());
 // Sanitize against NoSQL injection
 app.use(mongoSanitize());
 
-// Compression
-app.use(compression());
+// Passport (OAuth)
+app.use(passport.initialize());
 
 // Logging
 if (process.env.NODE_ENV === 'development') {
@@ -87,6 +89,7 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/oauth', oauthRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/admin', adminRoutes);

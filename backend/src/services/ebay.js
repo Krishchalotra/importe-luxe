@@ -1,4 +1,8 @@
 const axios = require("axios");
+const https = require("https");
+
+// Fix for corporate proxy / VPN SSL interception
+const agent = new https.Agent({ rejectUnauthorized: false });
 
 const getEbayToken = async () => {
   const clientId = process.env.EBAY_CLIENT_ID;
@@ -9,6 +13,7 @@ const getEbayToken = async () => {
     "https://api.ebay.com/identity/v1/oauth2/token",
     "grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope",
     {
+      httpsAgent: agent,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Basic ${credentials}`,
@@ -25,6 +30,7 @@ const fetchProducts = async (query) => {
   const res = await axios.get(
     `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${query}&limit=8`,
     {
+      httpsAgent: agent,
       headers: {
         Authorization: `Bearer ${token}`,
       },

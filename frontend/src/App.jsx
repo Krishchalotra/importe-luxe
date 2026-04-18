@@ -19,6 +19,7 @@ const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const OAuthCallback = lazy(() => import('./pages/OAuthCallback'));
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'));
@@ -64,6 +65,7 @@ const AppContent = () => {
           {/* Auth pages - no navbar/footer */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/oauth/callback" element={<OAuthCallback />} />
 
           {/* Admin layout - no public navbar/footer */}
           <Route
